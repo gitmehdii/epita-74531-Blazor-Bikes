@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\epita-74531-Blazor-Bikes.props" />
+</Project>

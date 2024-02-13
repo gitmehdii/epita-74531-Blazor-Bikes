@@ -1,0 +1,56 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@using epita_74531_Blazor_Bikes
+@using System.Text.Json
+@using System.Globalization
+<PageTitle>Stations</PageTitle>
+
+<h1>Stations</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (stations == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Available bikes</th>
+            <th>Available bike stands</th>
+            <th>Adress</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var station in stations)
+        {
+            <tr>
+                <td>@station.Name</td>
+                <td>@station.AvailableBikes</td>
+                <td>@station.AvailableBikeStands</td>
+                <td>
+                    <a href=@($"https://www.google.com/maps?q={station.Position.Latitude.ToString("G", CultureInfo.InvariantCulture)},{station.Position.Longitude.ToString("G", CultureInfo.InvariantCulture)}({Uri.EscapeDataString(station.Name)})") target="_blank">Voir sur Google Maps</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Station[]? stations;
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var json = await Http.GetStringAsync("https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=24fe84ecb046d2ef62defbec1b7bb19dd60b0626");
+        stations = JsonSerializer.Deserialize<Station[]>(json);
+    }
+    
+
+}
